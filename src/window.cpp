@@ -94,8 +94,10 @@ LRESULT CALLBACK snake::Application::sp_winProc(HWND hwnd, UINT uMsg, WPARAM wp,
 		::SetWindowPos(
 			hwnd,
 			nullptr,
-			newR->left, newR->right,
-			newR->right - newR->left, newR->bottom - newR->top,
+			newR->left, 
+			newR->top,
+			newR->right - newR->left, 
+			newR->bottom - newR->top,
 			SWP_NOZORDER
 		);
 		// Calculate new border
@@ -141,6 +143,7 @@ dx::BmBrush * snake::Application::BmpBrushesStruct::randomFoodTile(std::mt19937 
 	static std::uniform_int_distribution<std::size_t> distrib(0, Application::s_numFoodTiles - 1);
 	return this->snakeFoodTiles[distrib(rng)];
 }
+
 bool snake::Application::BmpBrushesStruct::createAssets(
 	dx::HwndRT * pRT,
 	Application::BmpStruct const & bmps
@@ -160,6 +163,7 @@ bool snake::Application::BmpBrushesStruct::createAssets(
 
 	return true;
 }
+
 void snake::Application::BmpBrushesStruct::destroyAssets() noexcept
 {
 	snake::safeRelease(this->obstacleTile);
@@ -251,6 +255,7 @@ bool snake::Application::TextStruct::createAssets(dx::HwndRT * pRT, dw::Factory 
 
 	return true;
 }
+
 void snake::Application::TextStruct::destroyAssets() noexcept
 {
 	snake::safeRelease(this->pScoreBrush);
@@ -486,6 +491,7 @@ void snake::Application::p_calcDpiSpecific() noexcept
 		.height = s_tileSz - this->toDipy(dY)
 	};
 }
+
 void snake::Application::p_calcPositions() noexcept
 {
 	RECT r{};
@@ -503,6 +509,7 @@ void snake::Application::p_calcPositions() noexcept
 	this->m_offsetX = this->toDipx((realx - x * this->m_factor) / 2.0f);
 	this->m_offsetY = this->toDipy((realy - y * this->m_factor) / 2.0f);
 }
+
 void snake::Application::p_toggleFullScreen() noexcept
 {
 	this->m_isFullscreen ^= 1;
@@ -562,6 +569,7 @@ void snake::Application::p_toggleFullScreen() noexcept
 		this->p_calcDpiSpecific();
 	}
 }
+
 bool snake::Application::p_loadD2D1BitmapFromResource(
 	std::uint16_t resourceId,
 	dx::SzU const & bmSize,
@@ -635,7 +643,10 @@ bool snake::Application::p_loadD2D1BitmapFromResource(
 
 snake::Application::Application(LPCWSTR lpCmdArgs) noexcept
 	: m_rng(std::random_device()()), m_lpCmdArgs(lpCmdArgs)
-{}
+{
+
+}
+
 snake::Application::~Application() noexcept
 {
 	this->destroyAssets();
@@ -721,28 +732,34 @@ bool snake::Application::initApp(HINSTANCE hInst, int nCmdShow)
 		SWP_NOZORDER | SWP_NOMOVE
 	);
 
-	// Upper left
+	// Upper left 第一个障碍物：左上角 横条
 	this->m_tiles.obstacleTiles.emplace_back(
-		this->m_tileSzF,
-		dx::SzF{ 0.f, 0.f },
-		dx::SzU{ 6, 1 }
+		this->m_tileSzF,	 // 每个格子的大小（固定18px）
+		dx::SzF{ 0.f, 0.f }, // 左上角坐标 (x=0, y=0) → 最左上角
+		dx::SzU{ 6, 1 }      // 宽6格，高1格
 	);
 	this->m_tiles.obstacleTiles.emplace_back(
-		this->m_tileSzF,
-		dx::SzF{ 0.f, this->m_tileSzF.height },
-		dx::SzU{ 1, 5 }
+		this->m_tileSzF,						// 格子大小
+		dx::SzF{ 0.f, this->m_tileSzF.height }, // 位置：x=0, y=往下移1格
+		dx::SzU{ 1, 5 } // 宽1格，高5格
 	);
 
-	// Upper right
+	// Upper right 在游戏窗口右上角放 2 个障碍物（墙角）
+	// 先记住 2 个关键常量: 
+	// s_fieldWidth = 63 游戏区域总宽度 = 63 格 
+	// m_tileSzF    = 18 每一格的大小（固定 18px）
 	this->m_tiles.obstacleTiles.emplace_back(
-		this->m_tileSzF,
-		dx::SzF{ this->m_tileSzF.width * (this->s_fieldWidth - 6.f), 0.f },
-		dx::SzU{ 6, 1 }
+		this->m_tileSzF, // 每个格子大小
+		dx::SzF{ this->m_tileSzF.width * (this->s_fieldWidth - 6.f), 0.f }, // X 坐标 = 最右边 - 6格  Y 坐标 = 最顶部
+		dx::SzU{ 6, 1 } // 宽 6 格，高 1 格
 	);
 	this->m_tiles.obstacleTiles.emplace_back(
 		this->m_tileSzF,
-		dx::SzF{ this->m_tileSzF.width * (this->s_fieldWidth - 1.f), this->m_tileSzF.height },
-		dx::SzU{ 1, 5 }
+		dx::SzF{ 
+			this->m_tileSzF.width * (this->s_fieldWidth - 1.f), // X 坐标 = 最右边 - 1格
+			this->m_tileSzF.height // Y 坐标 = 往下移 1 格
+		},
+		dx::SzU{ 1, 5 } // 宽 1 格，高 5 格
 	);
 
 	// Bottom left
@@ -786,7 +803,7 @@ bool snake::Application::initApp(HINSTANCE hInst, int nCmdShow)
 	);
 
 	// Create render target & initialise assets
-	if (!this->createAssets()) [[unlikely]]
+	if (!this->createAssets())
 	{
 		return false;
 	}
@@ -797,7 +814,7 @@ bool snake::Application::initApp(HINSTANCE hInst, int nCmdShow)
 	::ShowWindow(this->m_hwnd, nCmdShow);
 	::UpdateWindow(this->m_hwnd);
 
-	if (!this->m_snakeLogic.startSnakeLoop()) [[unlikely]]
+	if (!this->m_snakeLogic.startSnakeLoop())
 	{
 		return false;
 	}
