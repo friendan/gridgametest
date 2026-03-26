@@ -34,7 +34,7 @@ LRESULT CALLBACK snake::Application::sp_winProc(HWND hwnd, UINT uMsg, WPARAM wp,
 	switch (uMsg)
 	{
 	case WM_PAINT:
-		This->onRender();
+		This->onRenderWindow();
 		break;
 	case WM_KEYDOWN:
 		return This->onKeyPress(wp, lp);
@@ -1091,6 +1091,14 @@ void snake::Application::destroyAssets() noexcept
 	snake::safeRelease(this->m_pRT);
 }
 
+void snake::Application::onRenderWindow() noexcept{
+	if(mIsDrawGame){
+		onRender();
+	}else{
+		DrawGrid::DrawPixGrid(this->m_hwnd);
+	}
+}
+
 void snake::Application::onRender() noexcept
 {
 	this->createAssets();
@@ -1126,8 +1134,6 @@ void snake::Application::onRender() noexcept
 		this->destroyAssets();
 	}
 
-	DrawGrid::DrawBorder(this->m_hwnd, hdc);
-
 	::EndPaint(this->m_hwnd, &ps);
 }
 void snake::Application::onResize(UINT width, UINT height) noexcept
@@ -1157,12 +1163,19 @@ LRESULT snake::Application::onKeyPress(WPARAM wp, LPARAM lp) noexcept
 		}
 		break;
 	case VK_RETURN:
+		mIsDrawGame = true;
 		if (this->m_snakeLogic.m_sInfo.scoring.mode != Logic::SnakeInfo::modes::normal || this->m_snakeLogic.m_sInfo.scoring.paused)
 		{
 			this->restartGame();
 			return 0;
 		}
 		break;
+	case VK_F6:{
+		mIsDrawGame = false;
+		this->m_snakeLogic.m_sInfo.scoring.paused = 1;
+		::InvalidateRect(this->m_hwnd, nullptr, FALSE);
+		break;
+	}
 	case VK_F11:
 		// Act only if key was just pressed down, prevents spamming
 		if ((lp & 0x40000000) == 0)
@@ -1172,7 +1185,7 @@ LRESULT snake::Application::onKeyPress(WPARAM wp, LPARAM lp) noexcept
 		break;
 	}
 
-	if (!this->m_snakeLogic.m_sInfo.scoring.paused)
+	if (!this->m_snakeLogic.m_sInfo.scoring.paused && mIsDrawGame)
 	{
 		switch (wp)
 		{

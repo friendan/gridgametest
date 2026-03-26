@@ -49,7 +49,7 @@ void DrawGrid::DrawBorder(HWND hwnd, HDC hdc)
     Pen blackPen(Color(GetRValue(cr), GetGValue(cr), GetBValue(cr)), 1.0f); // 画笔（1像素宽）
     // Pen blackPen(Color(255, 255, 0, 0), 1.0f); // 画笔（1像素宽）
     Graphics graphics(hdc);
-    
+
     static int lineOffset = AppConst::BORDER_LINE_OFFSET;
     static int lineCount = AppConst::BORDER_LINE_COUNT;
 
@@ -66,7 +66,12 @@ void DrawGrid::DrawBorder(HWND hwnd, HDC hdc)
     }
 }
 
-
+void DrawGrid::DrawPixGrid(HWND hwnd){
+    PAINTSTRUCT ps;
+    HDC hdc = ::BeginPaint(hwnd, &ps);
+        DrawBorder(hwnd, hdc);
+    ::EndPaint(hwnd, &ps);
+}
 
 
 

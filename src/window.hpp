@@ -37,6 +37,7 @@ namespace snake
 		dx::Factory * m_pD2DFactory{ nullptr };
 		dw::Factory * m_pDWriteFactory{ nullptr };
 		dx::HwndRT * m_pRT{ nullptr };
+		bool mIsDrawGame = true;
 
 		struct TilesStruct
 		{
@@ -202,6 +203,7 @@ namespace snake
 		bool createAssets() noexcept;
 		void destroyAssets() noexcept;
 
+		void onRenderWindow() noexcept;
 		void onRender() noexcept;
 		void onResize(UINT width, UINT height) noexcept;
 
