@@ -14,6 +14,7 @@ using namespace Gdiplus;
 // GDI+ 静态变量初始化
 Gdiplus::GdiplusStartupInput DrawGrid::gdiplusStartupInput;
 ULONG_PTR DrawGrid::gdiplusToken = NULL;
+std::string DrawGrid::mHexString = "0123456789ABCDEF";
 
 //=============================================================================
 // 初始化 GDI+
@@ -78,6 +79,8 @@ void DrawGrid::DrawPixGrid(HWND hwnd){
     ::EndPaint(hwnd, &ps);
 }
 
-
+void DrawGrid::SetHexString(const std::string& hexString){
+    mHexString = hexString;
+}
 
 
