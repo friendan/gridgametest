@@ -19,7 +19,18 @@ public:
 	*/
 	static uint8_t HexCharToBits(char hexChar);
 	static void HexCharToBits(char hexChar, uint8_t bits[4]);
-	
 
+
+	/***********************************************************
+	 * 功能：将4位二进制数组 转换为 对应的16进制字符（反向转换函数）
+	 * 输入：uint8_t bits[4]
+	 *       bits[0] = 二进制第0位（最低位）
+	 *       bits[1] = 二进制第1位
+	 *       bits[2] = 二进制第2位
+	 *       bits[3] = 二进制第3位（最高位）
+	 *
+	 * 返回值：char 类型的16进制字符（0-9，A-F）
+	 **********************************************************/
+	static char BitsToHexChar(uint8_t bits[4]);
 	
 };

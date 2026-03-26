@@ -26,4 +26,13 @@ void AppUtil::HexCharToBits(char hexChar, uint8_t bits[4]){
 	bits[3] = (bin >> 3)  & 1;  // 第3位（最高位）
 }
 
+char AppUtil::BitsToHexChar(uint8_t bits[4])
+{
+    uint8_t val = 0;
+    val |= (bits[0] & 0x01) << 0;	// 把 bits[0]（第0位）放到 val 的第0位
+    val |= (bits[1] & 0x01) << 1;	// 把 bits[1]（第1位）放到 val 的第1位  
+    val |= (bits[2] & 0x01) << 2;	// 把 bits[2]（第2位）放到 val 的第2位
+    val |= (bits[3] & 0x01) << 3;	// 把 bits[3]（第3位）放到 val 的第3位
+    return (val < 10) ? ('0' + val) : ('A' + val - 10);	  // 将合并后的数值（0~15）转换为16进制字符并返回
+}
 
