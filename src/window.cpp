@@ -792,7 +792,7 @@ bool snake::Application::initApp(HINSTANCE hInst, int nCmdShow)
 		dx::SzU{ 1, 5 }
 	);
 
-	// Center piece
+	// Center piece 创建中间的墙
 	this->m_tiles.obstacleTiles.emplace_back(
 		this->m_tileSzF,
 		dx::SzF{
@@ -829,7 +829,7 @@ int snake::Application::msgLoop() noexcept
 	BOOL br;
 	while ((br = ::GetMessageW(&msg, nullptr, 0, 0)) != 0)
 	{
-		if (br == -1) [[unlikely]]
+		if (br == -1)
 		{
 			this->s_error(errid::Unknown);
 			return -1;
@@ -899,7 +899,7 @@ bool snake::Application::createAssets() noexcept
 		D2D1::HwndRenderTargetProperties(this->m_hwnd, size),
 		&this->m_pRT
 	);
-	if (FAILED(hr)) [[unlikely]]
+	if (FAILED(hr))
 	{
 		this->error(errid::D2DRT);
 		return false;
@@ -942,7 +942,7 @@ bool snake::Application::createAssets() noexcept
 		),
 		&this->m_bmps.obstacleTile
 	);
-	if (FAILED(hr)) [[unlikely]]
+	if (FAILED(hr))
 	{
 		this->error(errid::D2DAssets);
 		return false;
@@ -1007,7 +1007,7 @@ bool snake::Application::createAssets() noexcept
 		),
 		&this->m_bmps.snakeHeadTile
 	);
-	if (FAILED(hr)) [[unlikely]]
+	if (FAILED(hr))
 	{
 		this->error(errid::D2DAssets);
 		return false;
@@ -1021,7 +1021,7 @@ bool snake::Application::createAssets() noexcept
 		this->m_bmps.snakeFoodTiles[0],
 		nullptr,
 		&tMemSize
-	)) [[unlikely]]
+	))
 	{
 		this->error(errid::D2DAssets);
 		return false;
@@ -1045,7 +1045,7 @@ bool snake::Application::createAssets() noexcept
 	}
 
 	// Create bitmap brushes
-	if (!this->m_bmpBrushes.createAssets(this->m_pRT, this->m_bmps)) [[unlikely]]
+	if (!this->m_bmpBrushes.createAssets(this->m_pRT, this->m_bmps))
 	{
 		this->error(errid::D2DAssetsBmBrushes);
 		return false;
@@ -1063,7 +1063,7 @@ bool snake::Application::createAssets() noexcept
 	this->m_tiles.snakeFoodTile.createAssets(this->m_bmpBrushes.randomFoodTile(this->m_rng));
 	
 	// Create fonts
-	if (!this->m_text.createAssets(this->m_pRT, this->m_pDWriteFactory)) [[unlikely]]
+	if (!this->m_text.createAssets(this->m_pRT, this->m_pDWriteFactory))
 	{
 		this->error(errid::DWAssetsFonts);
 		return false;
@@ -1112,14 +1112,15 @@ void snake::Application::onRender() noexcept
 	this->m_text.onRender(this->m_tileSzF, this->m_pRT, this->m_snakeLogic.m_sInfo.scoring);
 	
 	
-	Tile::onRender(this->m_tiles.obstacleTiles , this->m_pRT);
-	this->m_tiles.snakeFoodTile.onRender(this->m_pRT);
+	Tile::onRender(this->m_tiles.obstacleTiles , this->m_pRT); // 绘制障碍物
+	this->m_tiles.snakeFoodTile.onRender(this->m_pRT); // 绘制食物
 
 	Tile::onRender(this->m_tiles.snakeBodyTiles, this->m_pRT);
 	this->m_tiles.snakeHeadTile.onRender(this->m_pRT);
 
-	if (this->m_pRT->EndDraw() == HRESULT(D2DERR_RECREATE_TARGET)) [[unlikely]]
+	if (this->m_pRT->EndDraw() == HRESULT(D2DERR_RECREATE_TARGET)){
 		this->destroyAssets();
+	}
 
 	::EndPaint(this->m_hwnd, &ps);
 }
