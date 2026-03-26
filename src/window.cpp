@@ -1,8 +1,8 @@
 #include "window.hpp"
 #include "resource.h"
+#include "DrawGrid.hpp"
 
 #include <tgmath.h>
-
 #include <ctime>
 #include <memory>
 
@@ -721,7 +721,9 @@ bool snake::Application::initApp(HINSTANCE hInst, int nCmdShow)
 		return false;
 	}
 
+	DrawGrid::InitGdiPlus();
 	this->p_calcDpiSpecific();
+
 	::SetWindowPos(
 		this->m_hwnd,
 		nullptr,
@@ -837,6 +839,8 @@ int snake::Application::msgLoop() noexcept
 		::TranslateMessage(&msg);
 		::DispatchMessageW(&msg);
 	}
+
+	DrawGrid::UninitGdiPlus();
 	return int(msg.wParam);
 }
 
@@ -1092,7 +1096,7 @@ void snake::Application::onRender() noexcept
 	this->createAssets();
 
 	PAINTSTRUCT ps;
-	[[maybe_unused]] auto hdc = ::BeginPaint(this->m_hwnd, &ps);
+	auto hdc = ::BeginPaint(this->m_hwnd, &ps);
 
 	// Begin also render target painting
 	this->m_pRT->BeginDraw();

@@ -3,7 +3,6 @@
 #include "common.hpp"
 #include "tiles.hpp"
 #include "snakelogic.hpp"
-
 #include <deque>
 #include <array>
 #include <random>

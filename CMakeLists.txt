@@ -43,7 +43,7 @@ file(GLOB_RECURSE SRC_FILES
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRC_FILES})
 
 add_executable(${TARGET_NAME} WIN32 ${SRC_FILES})
-target_link_libraries(${TARGET_NAME} PRIVATE shell32.lib comctl32.lib shlwapi.lib winmm.lib d2d1.lib dwrite.lib)
+target_link_libraries(${TARGET_NAME} PRIVATE shell32.lib comctl32.lib shlwapi.lib winmm.lib d2d1.lib dwrite.lib gdiplus.lib)
 
 set_target_properties(${TARGET_NAME} PROPERTIES
     OUTPUT_NAME_RELEASE "GridGame"
