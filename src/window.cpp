@@ -1126,6 +1126,8 @@ void snake::Application::onRender() noexcept
 		this->destroyAssets();
 	}
 
+	DrawGrid::DrawBorder(this->m_hwnd, hdc);
+
 	::EndPaint(this->m_hwnd, &ps);
 }
 void snake::Application::onResize(UINT width, UINT height) noexcept

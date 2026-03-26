@@ -45,9 +45,11 @@ void DrawGrid::DrawBorder(HWND hwnd, HDC hdc)
     int clientWidth = rcClient.right;
     int clientHeight = rcClient.bottom;
 
-    Pen blackPen(Color(255, 0, 0, 0), 1.0f); // 画笔（1像素宽）
+    static COLORREF cr = AppConst::BORDER_COLOR;
+    Pen blackPen(Color(GetRValue(cr), GetGValue(cr), GetBValue(cr)), 1.0f); // 画笔（1像素宽）
+    // Pen blackPen(Color(255, 255, 0, 0), 1.0f); // 画笔（1像素宽）
     Graphics graphics(hdc);
-
+    
     static int lineOffset = AppConst::BORDER_LINE_OFFSET;
     static int lineCount = AppConst::BORDER_LINE_COUNT;
 
