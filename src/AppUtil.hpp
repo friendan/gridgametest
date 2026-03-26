@@ -18,8 +18,8 @@ public:
 		uint8_t bit3 = (bin >> 3) & 0x01; // 第4位
 	*/
 	static uint8_t HexCharToBits(char hexChar);
-
-
+	static void HexCharToBits(char hexChar, uint8_t bits[4]);
 	
+
 	
 };
