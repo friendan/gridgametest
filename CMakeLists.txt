@@ -36,6 +36,7 @@ add_compile_options(/utf-8)
 set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
 set(TARGET_NAME SnakeD2D)
 file(GLOB_RECURSE SRC_FILES
+    ${SRC_DIR}/*.hpp
     ${SRC_DIR}/*.cpp
     ${SRC_DIR}/*.rc
 )
