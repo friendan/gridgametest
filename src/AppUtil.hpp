@@ -35,7 +35,24 @@ public:
 	static char BitsToHexChar(uint8_t bits[4]);
 
 
-	std::string WStrToStr(const std::wstring& wstr);
-	std::wstring StrToWStr(const std::string& str);
+	static std::string WStrToStr(const std::wstring& wstr);
+	static std::wstring StrToWStr(const std::string& str);
+
+	/**
+	 * @brief 读取文件的二进制内容，并转换为十六进制字符串
+	 * @param path 文件路径
+	 * @return 二进制数据对应的大写十六进制字符串（无空格，如："12AB340A0F123A"）
+	 */
+	static std::string ReadFileToHexString(const std::string& path);
+	static std::string ReadFileToHexString(const std::wstring& path);
+	
+	 /**
+     * @brief 将十六进制字符串 → 写入二进制文件
+     * @param hexStr 十六进制字符串（大写/小写均可，无空格）
+     * @param strFilePath 要保存的文件路径
+     * @return 成功返回 true，失败返回 false
+     */
+    static bool WriteHexStringToFile(const std::string& hexStr, const std::string& strFilePath);
+    static bool WriteHexStringToFile(const std::string& hexStr, const std::wstring& wstrFilePath);
 	
 };

@@ -2,6 +2,9 @@
 #include <cuchar>
 #include <stdexcept>
 #include <clocale>
+#include <fstream>
+#include <sstream>
+#include <iomanip>
 
 
 uint8_t AppUtil::HexCharToBits(char hexChar)
@@ -38,7 +41,7 @@ char AppUtil::BitsToHexChar(uint8_t bits[4])
     return (val < 10) ? ('0' + val) : ('A' + val - 10);	  // 将合并后的数值（0~15）转换为16进制字符并返回
 }
 
-std::string WStrToStr(const std::wstring& wstr){
+std::string AppUtil::WStrToStr(const std::wstring& wstr){
 	if (wstr.empty()) return {};
     int len = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, nullptr, 0, nullptr, nullptr);
     std::string result(len, 0);
@@ -47,7 +50,7 @@ std::string WStrToStr(const std::wstring& wstr){
     return result;
 }
 
-std::wstring StrToWStr(const std::string& str){
+std::wstring AppUtil::StrToWStr(const std::string& str){
 	if (str.empty()) return {};
     int len = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, nullptr, 0);
     std::wstring result(len, 0);
@@ -55,3 +58,86 @@ std::wstring StrToWStr(const std::string& str){
     if (!result.empty()) result.pop_back();
     return result;
 }
+
+std::string AppUtil::ReadFileToHexString(const std::string& path)
+{
+    std::ifstream file(path, std::ios::binary);
+    if (!file.is_open()) {
+       return {};
+    }
+
+    std::streamsize fileSize = file.tellg();
+    file.seekg(0);
+
+    // 一次性读取全部数据（比流方式快非常多）
+    std::string binaryData;
+    binaryData.resize(static_cast<size_t>(fileSize));
+    file.read(&binaryData[0], fileSize);
+
+    // 【高性能】预分配输出内存（1字节 = 2个十六进制字符）
+    std::string hexString;
+    hexString.reserve(static_cast<size_t>(fileSize) * 2);
+
+    // 十六进制字符表（查表法，最快）
+    static const char hexTable[] = "0123456789ABCDEF";
+
+    // 纯内存操作，无任何格式化开销 → 速度极快
+    for (uint8_t byte : binaryData)
+    {
+        hexString += hexTable[byte >> 4];    // 高4位
+        hexString += hexTable[byte & 0x0F];  // 低4位
+    }
+    return hexString;
+}
+
+std::string AppUtil::ReadFileToHexString(const std::wstring& path)
+{
+    std::string strFilePath = AppUtil::WStrToStr(path);
+    return AppUtil::ReadFileToHexString(strFilePath);
+}
+
+bool AppUtil::WriteHexStringToFile(const std::string& hexStr, const std::string& strFilePath)
+{
+    if (hexStr.empty() || hexStr.size() % 2 != 0) {
+        return false; // 长度必须是偶数
+    }
+
+    std::ofstream file(strFilePath, std::ios::binary);
+    if (!file.is_open()) {
+        return false;
+    }
+
+    // 预分配二进制内存（2个十六进制字符 = 1字节）
+    const size_t byteCount = hexStr.size() / 2;
+    std::string binaryData;
+    binaryData.reserve(byteCount);
+
+    // 高性能查表转换（不使用字符串流，纯内存操作）
+    auto CharToHex = [](char c) -> uint8_t {
+        if (c >= '0' && c <= '9') return c - '0';
+        if (c >= 'A' && c <= 'F') return 10 + (c - 'A');
+        if (c >= 'a' && c <= 'f') return 10 + (c - 'a');
+        return 0xFF; // 非法字符
+    };
+
+    // 每两个字符合成一个字节
+    for (size_t i = 0; i < hexStr.size(); i += 2) {
+        uint8_t high = CharToHex(hexStr[i]);
+        uint8_t low = CharToHex(hexStr[i + 1]);
+        binaryData += (high << 4) | low;
+    }
+
+    // 一次性写入文件（极快）
+    file.write(binaryData.data(), std::streamsize(binaryData.size()));
+    return true;
+}
+
+bool AppUtil::WriteHexStringToFile(const std::string& hexStr, const std::wstring& wstrFilePath)
+{
+    return AppUtil::WriteHexStringToFile(hexStr, WStrToStr(wstrFilePath));
+}
+
+
+
+
+
