@@ -46,9 +46,14 @@ void DrawGrid::DrawBorder(HWND hwnd, HDC hdc)
     int clientHeight = rcClient.bottom;
 
     static COLORREF cr = AppConst::BORDER_COLOR;
+    static COLORREF bkCr = AppConst::BACKGROUND_COLOR;
+
     Pen blackPen(Color(GetRValue(cr), GetGValue(cr), GetBValue(cr)), 1.0f); // 画笔（1像素宽）
     // Pen blackPen(Color(255, 255, 0, 0), 1.0f); // 画笔（1像素宽）
     Graphics graphics(hdc);
+
+    SolidBrush blackBrush(Color(GetRValue(bkCr), GetGValue(bkCr), GetBValue(bkCr)));
+    graphics.FillRectangle(&blackBrush, 0, 0, clientWidth, clientHeight);
 
     static int lineOffset = AppConst::BORDER_LINE_OFFSET;
     static int lineCount = AppConst::BORDER_LINE_COUNT;
