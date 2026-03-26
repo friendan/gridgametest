@@ -1,6 +1,7 @@
 #pragma once
+#include <Windows.h>
 #include <cstdint>  // 必须包含，用于uint8_t
-
+#include <string>
 
 class AppUtil
 {
@@ -32,5 +33,9 @@ public:
 	 * 返回值：char 类型的16进制字符（0-9，A-F）
 	 **********************************************************/
 	static char BitsToHexChar(uint8_t bits[4]);
+
+
+	std::string WStrToStr(const std::wstring& wstr);
+	std::wstring StrToWStr(const std::string& str);
 	
 };

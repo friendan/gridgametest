@@ -1,5 +1,7 @@
 #include "AppUtil.hpp"
-
+#include <cuchar>
+#include <stdexcept>
+#include <clocale>
 
 
 uint8_t AppUtil::HexCharToBits(char hexChar)
@@ -36,3 +38,20 @@ char AppUtil::BitsToHexChar(uint8_t bits[4])
     return (val < 10) ? ('0' + val) : ('A' + val - 10);	  // 将合并后的数值（0~15）转换为16进制字符并返回
 }
 
+std::string WStrToStr(const std::wstring& wstr){
+	if (wstr.empty()) return {};
+    int len = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, nullptr, 0, nullptr, nullptr);
+    std::string result(len, 0);
+    WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, &result[0], len, nullptr, nullptr);
+    if (!result.empty()) result.pop_back();
+    return result;
+}
+
+std::wstring StrToWStr(const std::string& str){
+	if (str.empty()) return {};
+    int len = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, nullptr, 0);
+    std::wstring result(len, 0);
+    MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, &result[0], len);
+    if (!result.empty()) result.pop_back();
+    return result;
+}
