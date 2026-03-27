@@ -16,9 +16,18 @@ public:
 	static void InitGdiPlus();
 	static void UninitGdiPlus();
 
+public:
+	static size_t mWidth;
+	static size_t mHeight;
+	static size_t mTotalPage;
+	static size_t mPageSize;
+	static size_t mCurPage;
+	static std::string mHexString;
+
 private:
     // GDI+ 全局变量
     static Gdiplus::GdiplusStartupInput gdiplusStartupInput;
     static ULONG_PTR gdiplusToken;
-    static std::string mHexString;
+    static size_t mDrawWidth;
+    static size_t mDrawHeight;
 };

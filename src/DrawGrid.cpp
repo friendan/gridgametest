@@ -14,6 +14,14 @@ using namespace Gdiplus;
 // GDI+ 静态变量初始化
 Gdiplus::GdiplusStartupInput DrawGrid::gdiplusStartupInput;
 ULONG_PTR DrawGrid::gdiplusToken = NULL;
+
+size_t DrawGrid::mWidth = 0;
+size_t DrawGrid::mHeight = 0;
+size_t DrawGrid::mTotalPage = 0;
+size_t DrawGrid::mPageSize = 0;
+size_t DrawGrid::mCurPage = 0;
+size_t DrawGrid::mDrawWidth = 0;
+size_t DrawGrid::mDrawHeight = 0;
 std::string DrawGrid::mHexString = "0123456789ABCDEF";
 
 //=============================================================================

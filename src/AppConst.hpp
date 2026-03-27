@@ -10,7 +10,6 @@ namespace AppConst
 	constexpr int BORDER_LINE_COUNT  = 3;	// 表示：从顶部/底部/左侧/右侧 依次画N条线
 	// constexpr COLORREF BORDER_COLOR  = RGB(255, 0, 0);
 	constexpr COLORREF BORDER_COLOR  = RGB(0, 0, 0);
-
 	constexpr COLORREF BACKGROUND_COLOR  = RGB(128, 128, 128);
 
 
