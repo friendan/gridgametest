@@ -1185,7 +1185,7 @@ LRESULT snake::Application::onKeyPress(WPARAM wp, LPARAM lp) noexcept
 	{
 	// Toggle game pause state
 	case VK_ESCAPE:
-		if (this->m_snakeLogic.m_sInfo.scoring.mode == Logic::SnakeInfo::modes::normal)
+		if (mIsDrawGame && this->m_snakeLogic.m_sInfo.scoring.mode == Logic::SnakeInfo::modes::normal)
 		{
 			this->m_snakeLogic.m_sInfo.scoring.paused ^= 1;
 			// Update screen
@@ -1198,6 +1198,7 @@ LRESULT snake::Application::onKeyPress(WPARAM wp, LPARAM lp) noexcept
 		if (this->m_snakeLogic.m_sInfo.scoring.mode != Logic::SnakeInfo::modes::normal || this->m_snakeLogic.m_sInfo.scoring.paused)
 		{
 			this->restartGame();
+			this->ClearDrawGridInfo();
 			return 0;
 		}
 		break;
@@ -1425,6 +1426,15 @@ bool snake::Application::CreateStatusBar()
     // UpdateStatusBarText(4, L" SnakeD2D 运行中");
 
     return true;
+}
+
+void snake::Application::ClearDrawGridInfo(){
+	UpdateStatusBarText(0, L"");
+    UpdateStatusBarText(1, L"");
+    UpdateStatusBarText(2, L"");
+    UpdateStatusBarText(3, L"");
+    UpdateStatusBarText(4, L"");
+    UpdateStatusBarText(5, L"");
 }
 
 void snake::Application::ResizeStatusBar()

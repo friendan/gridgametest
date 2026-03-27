@@ -261,6 +261,7 @@ namespace snake
 		void CenterWindowOnMonitor(HWND hWnd);
 		void UpdateWindowTitle();
 		void UpdateDrawGridInfo();
+		void ClearDrawGridInfo();
 
 		 // 状态栏
 	    bool CreateStatusBar();
