@@ -29,7 +29,6 @@ LRESULT CALLBACK snake::Application::sp_winProc(HWND hwnd, UINT uMsg, WPARAM wp,
 				::DestroyWindow(hwnd);
 			}
 
-			This->CreateStatusBar();
 			This->CenterWindowOnMonitor(hwnd);
 			return 0;
 		}
@@ -829,6 +828,9 @@ bool snake::Application::initApp(HINSTANCE hInst, int nCmdShow)
 	::ShowWindow(this->m_hwnd, nCmdShow);
 	::UpdateWindow(this->m_hwnd);
 
+	this->CreateStatusBar();
+	this->ResizeStatusBar();
+
 	if (!this->m_snakeLogic.startSnakeLoop())
 	{
 		return false;
@@ -1166,6 +1168,11 @@ void snake::Application::onResize(UINT width, UINT height) noexcept
 
 	this->m_pRT->Resize(dx::SzU{ width, height });
 	this->p_calcPositions();
+
+	// 加这一行强制重绘状态栏
+    if (m_hStatusBar) {
+        RedrawWindow(m_hStatusBar, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+    }
 }
 
 LRESULT snake::Application::onKeyPress(WPARAM wp, LPARAM lp) noexcept
@@ -1415,24 +1422,28 @@ void snake::Application::ResizeStatusBar()
     if (!m_hStatusBar)
         return;
 
-    // 获取客户区宽度
     RECT rcClient;
     GetClientRect(m_hwnd, &rcClient);
-    int width = rcClient.right - rcClient.left;
 
-    // 5栏：最后一栏自动占满
-    const int parts = 5;
-    int rightEdges[parts] = { 0 };
+    // 5栏
+    const int cnt = 5;
+    int parts[cnt] = {
+        100,
+        200,
+        300,
+        400,
+        -1  // 自动拉伸
+    };
 
-    // 前4栏固定宽度
-    rightEdges[0] = 80;
-    rightEdges[1] = 160;
-    rightEdges[2] = 240;
-    rightEdges[3] = 320;
-    rightEdges[4] = -1; // 最后一栏自动填满
+    SendMessageW(m_hStatusBar, SB_SETPARTS, cnt, (LPARAM)parts);
 
-    // 通知状态栏
-    SendMessageW(m_hStatusBar, SB_SETPARTS, parts, (LPARAM)rightEdges);
+    // 强制状态栏停靠底部！！！关键！！！
+    SetWindowPos(
+        m_hStatusBar,
+        nullptr,
+        0, 0, 0, 0,
+        SWP_NOZORDER | SWP_NOSIZE | SWP_NOMOVE
+    );
 }
 
 void snake::Application::UpdateStatusBarText(int part, LPCWSTR text)
