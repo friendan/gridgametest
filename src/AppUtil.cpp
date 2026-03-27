@@ -5,7 +5,7 @@
 #include <fstream>
 #include <sstream>
 #include <iomanip>
-
+#include <mutex>
 
 uint8_t AppUtil::HexCharToBits(char hexChar)
 {
@@ -153,5 +153,32 @@ std::string AppUtil::GetSubStrByPage(const std::string& str, size_t pageSize, si
     return str.substr(startPos, endPos - startPos);
 }
 
+std::string AppUtil::GetTimeStr(){
+    time_t now = time(nullptr);
+    tm t{};
+    localtime_s(&t, &now); // Windows下安全的本地时间函数
+    char buf[32] = {0};
+    sprintf_s(buf, "[%04d-%02d-%02d %02d:%02d:%02d]", 
+             t.tm_year + 1900, t.tm_mon + 1, t.tm_mday,
+             t.tm_hour, t.tm_min, t.tm_sec);
+    return buf;
+}
 
+static std::mutex g_log_mutex;
+void write_log(const std::string& msg) {
+    std::lock_guard<std::mutex> lock(g_log_mutex); // 自动加锁/解锁
+    std::ofstream log_file("app.log", std::ios::app | std::ios::out);
+    if (log_file.is_open()) {
+        log_file << AppUtil::GetTimeStr() << " " << msg << std::endl;
+        log_file.close();
+    }
+}
+
+void AppUtil::SaveLog(const std::string& msg){
+    write_log(msg);
+}
+
+void AppUtil::SaveLog(const std::wstring& msg){
+    write_log(WStrToStr(msg));
+}
 
