@@ -721,7 +721,7 @@ bool snake::Application::initApp(HINSTANCE hInst, int nCmdShow)
 		return false;
 	}
 
-	DrawGrid::InitGdiPlus();
+	DrawGrid::Inst()->InitGdiPlus();
 	this->p_calcDpiSpecific();
 
 	::SetWindowPos(
@@ -840,7 +840,7 @@ int snake::Application::msgLoop() noexcept
 		::DispatchMessageW(&msg);
 	}
 
-	DrawGrid::UninitGdiPlus();
+	DrawGrid::Inst()->UninitGdiPlus();
 	return int(msg.wParam);
 }
 
@@ -1095,7 +1095,7 @@ void snake::Application::onRenderWindow() noexcept{
 	if(mIsDrawGame){
 		onRender();
 	}else{
-		DrawGrid::DrawPixGrid(this->m_hwnd);
+		DrawGrid::Inst()->DrawPixGrid(this->m_hwnd);
 	}
 }
 

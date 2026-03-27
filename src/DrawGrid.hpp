@@ -6,28 +6,37 @@
 
 class DrawGrid
 {
+private:
+	DrawGrid() {}
 public:
+	static DrawGrid* Inst(){
+		static DrawGrid inst;
+		return &inst;
+	}
+
     // 在窗口客户区绘制边界线（顶部、底部、左侧、右侧）
-	static void DrawBorder(HWND hwnd, HDC hdc);
-	static void DrawPixGrid(HWND hwnd);
+	void DrawInit(HWND hwnd, HDC hdc);
+	void DrawBorder(HWND hwnd, HDC hdc);
+	void DrawPixGrid(HWND hwnd);
 
-	static void SetHexString(const std::string& hexString);
+	void SetHexString(const std::string& hexString);
+	void NextPage();
 	
-	static void InitGdiPlus();
-	static void UninitGdiPlus();
+	void InitGdiPlus();
+	void UninitGdiPlus();
 
 public:
-	static size_t mWidth;
-	static size_t mHeight;
-	static size_t mTotalPage;
-	static size_t mPageSize;
-	static size_t mCurPage;
-	static std::string mHexString;
+	size_t mWidth = 0;
+	size_t mHeight = 0;
+	size_t mTotalPage = 0;
+	size_t mPageSize  = 0;
+	size_t mCurPage   = 0;
 
 private:
     // GDI+ 全局变量
-    static Gdiplus::GdiplusStartupInput gdiplusStartupInput;
-    static ULONG_PTR gdiplusToken;
-    static size_t mDrawWidth;
-    static size_t mDrawHeight;
+    Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+    ULONG_PTR gdiplusToken;
+    size_t mDrawWidth = 0;
+    size_t mDrawHeight = 0;
+    std::string mHexString = "0123456789ABCDEF";
 };

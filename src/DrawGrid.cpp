@@ -7,22 +7,8 @@
 #include <fstream>
 #include <sstream>
 #include <iomanip>
-
-
 using namespace Gdiplus;
 
-// GDI+ 静态变量初始化
-Gdiplus::GdiplusStartupInput DrawGrid::gdiplusStartupInput;
-ULONG_PTR DrawGrid::gdiplusToken = NULL;
-
-size_t DrawGrid::mWidth = 0;
-size_t DrawGrid::mHeight = 0;
-size_t DrawGrid::mTotalPage = 0;
-size_t DrawGrid::mPageSize = 0;
-size_t DrawGrid::mCurPage = 0;
-size_t DrawGrid::mDrawWidth = 0;
-size_t DrawGrid::mDrawHeight = 0;
-std::string DrawGrid::mHexString = "0123456789ABCDEF";
 
 //=============================================================================
 // 初始化 GDI+
@@ -44,6 +30,9 @@ void DrawGrid::UninitGdiPlus()
     }
 }
 
+void DrawGrid::DrawInit(HWND hwnd, HDC hdc){
+
+}
 
 void DrawGrid::DrawBorder(HWND hwnd, HDC hdc)
 {
@@ -83,6 +72,7 @@ void DrawGrid::DrawBorder(HWND hwnd, HDC hdc)
 void DrawGrid::DrawPixGrid(HWND hwnd){
     PAINTSTRUCT ps;
     HDC hdc = ::BeginPaint(hwnd, &ps);
+        DrawInit(hwnd, hdc);
         DrawBorder(hwnd, hdc);
     ::EndPaint(hwnd, &ps);
 }
@@ -90,5 +80,14 @@ void DrawGrid::DrawPixGrid(HWND hwnd){
 void DrawGrid::SetHexString(const std::string& hexString){
     mHexString = hexString;
 }
+
+void DrawGrid::NextPage(){
+    mCurPage += 1;
+    if(mCurPage > mTotalPage){
+        mCurPage = mTotalPage;
+    }
+}
+
+
 
 
