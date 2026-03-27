@@ -31,7 +31,7 @@ public:
 	size_t mHeight = 0;
 	size_t mTotalPage = 0;
 	size_t mPageSize  = 0;
-	size_t mCurPage   = 0;
+	size_t mCurPage   = 1; // 从1开始
 
 private:
     // GDI+ 全局变量

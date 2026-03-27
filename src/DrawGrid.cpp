@@ -103,11 +103,15 @@ void DrawGrid::NextPage(){
 
 void DrawGrid::DrawHexString(HWND hwnd, HDC hdc){
     if(mWidth < 1 || mHeight < 1 || mPageSize < 1 || mHexString.empty() || mHexString.size() % 2 != 0){
+        AppUtil::SaveLog("DrawHexString param error");
+        AppUtil::SaveLog("mWidth:", mWidth, " mHeight:", mHeight, " mPageSize:", mPageSize, " mCurPage:", mCurPage);
+        AppUtil::SaveLog("mHexString:", mHexString);
         return;
     }
 
     std::string hexString = AppUtil::GetSubStrByPage(mHexString, mPageSize, mCurPage);
     if(hexString.empty()){
+        AppUtil::SaveLog("hexString is empty mPageSize:", mPageSize, " mCurPage:", mCurPage);
         return;
     }
 
@@ -155,6 +159,7 @@ void DrawGrid::DrawHexString(HWND hwnd, HDC hdc){
     BitBlt(hdc, xStart, yStart, mDrawWidth, mDrawHeight, hdcMem, 0, 0, SRCCOPY);
     DeleteDC(hdcMem);
     DeleteObject(hBitmap);
+    AppUtil::SaveLog("DrawHexString finish");
 }
 
 
