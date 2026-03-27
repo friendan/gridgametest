@@ -1113,6 +1113,7 @@ void snake::Application::onRenderWindow() noexcept{
 		onRender();
 	}else{
 		DrawGrid::Inst()->DrawPixGrid(this->m_hwnd);
+		UpdateDrawGridInfo();
 	}
 }
 
@@ -1200,6 +1201,13 @@ LRESULT snake::Application::onKeyPress(WPARAM wp, LPARAM lp) noexcept
 			return 0;
 		}
 		break;
+	case VK_SPACE:{
+		if(!mIsDrawGame){
+			DrawGrid::Inst()->NextPage();
+			::InvalidateRect(this->m_hwnd, nullptr, FALSE);
+		}
+		break;
+	}
 	case VK_F5:{
 		this->CenterWindowOnMonitor(this->m_hwnd);
 		break;
@@ -1489,7 +1497,18 @@ void snake::Application::UpdateWindowTitle()
 }
 
 
+void snake::Application::UpdateDrawGridInfo(){
+	static DrawGrid* pDrawGrid = DrawGrid::Inst();
+	wchar_t wszBuff[256] = {0};
+    swprintf_s(wszBuff, L"%zux%zu", pDrawGrid->mDrawWidth, pDrawGrid->mDrawHeight);
+    UpdateStatusBarText(0, wszBuff);
 
+    swprintf_s(wszBuff, L"%zu", pDrawGrid->mPageSize);
+    UpdateStatusBarText(1, wszBuff);
+
+    swprintf_s(wszBuff, L"%zu | %zu", pDrawGrid->mTotalPage, pDrawGrid->mCurPage);
+    UpdateStatusBarText(2, wszBuff);
+}
 
 
 

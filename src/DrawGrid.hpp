@@ -32,12 +32,13 @@ public:
 	size_t mTotalPage = 0;
 	size_t mPageSize  = 0;
 	size_t mCurPage   = 1; // 从1开始
+	size_t mDrawWidth = 0;
+    size_t mDrawHeight = 0;
 
 private:
     // GDI+ 全局变量
     Gdiplus::GdiplusStartupInput gdiplusStartupInput;
     ULONG_PTR gdiplusToken;
-    size_t mDrawWidth = 0;
-    size_t mDrawHeight = 0;
+    
     std::string mHexString = "0123456789ABCDEF";
 };
