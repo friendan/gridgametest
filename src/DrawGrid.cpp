@@ -57,28 +57,21 @@ void DrawGrid::DrawBorder(HWND hwnd, HDC hdc)
 {
     if (!hwnd || !hdc) return;
 
-    RECT rcClient{};
-    GetClientRect(hwnd, &rcClient);
-    int clientWidth = rcClient.right;
-    int clientHeight = rcClient.bottom;
-
     static COLORREF cr = AppConst::BORDER_COLOR;
     static COLORREF bkCr = AppConst::BACKGROUND_COLOR;
 
     Pen blackPen(Color(GetRValue(cr), GetGValue(cr), GetBValue(cr)), 1.0f); // 画笔（1像素宽）
-    // Pen blackPen(Color(255, 255, 0, 0), 1.0f); // 画笔（1像素宽）
     Graphics graphics(hdc);
 
     SolidBrush blackBrush(Color(GetRValue(bkCr), GetGValue(bkCr), GetBValue(bkCr)));
-    graphics.FillRectangle(&blackBrush, 0, 0, clientWidth, clientHeight);
+    graphics.FillRectangle(&blackBrush, 0, 0, mWidth, mHeight);
 
     static int lineOffset = AppConst::BORDER_LINE_OFFSET;
     static int lineCount = AppConst::BORDER_LINE_COUNT;
-
     float xStart = lineOffset;
     float yStart = lineOffset;
-    float xMax = clientWidth - lineOffset;
-    float yMax = clientHeight - lineOffset;
+    float xMax = mWidth - lineOffset;
+    float yMax = mHeight - lineOffset;
 
     for(int cnt = 0; cnt < lineCount; ++cnt){
         graphics.DrawLine(&blackPen, xStart, yStart + cnt, xMax, yStart + cnt);     // 顶部画N条直线
@@ -93,6 +86,7 @@ void DrawGrid::DrawPixGrid(HWND hwnd){
     HDC hdc = ::BeginPaint(hwnd, &ps);
         DrawInit(hwnd, hdc);
         DrawBorder(hwnd, hdc);
+        DrawHexString(hwnd, hdc);
     ::EndPaint(hwnd, &ps);
 }
 
@@ -107,6 +101,60 @@ void DrawGrid::NextPage(){
     }
 }
 
+void DrawGrid::DrawHexString(HWND hwnd, HDC hdc){
+    if(mWidth < 1 || mHeight < 1 || mPageSize < 1 || mHexString.empty() || mHexString.size() % 2 != 0){
+        return;
+    }
 
+    std::string hexString = AppUtil::GetSubStrByPage(mHexString, mPageSize, mCurPage);
+    if(hexString.empty()){
+        return;
+    }
+
+    BITMAPINFO bmi = {0};
+    bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    bmi.bmiHeader.biWidth = mDrawWidth;
+    bmi.bmiHeader.biHeight = -mDrawHeight;
+    bmi.bmiHeader.biPlanes = 1;
+    bmi.bmiHeader.biBitCount = 32; // ARGB
+    bmi.bmiHeader.biCompression = BI_RGB;
+
+    uint32_t* pixels = nullptr;  // pixels[y * width + x] = color; // (x, y)
+    HBITMAP hBitmap = CreateDIBSection(hdc, &bmi, DIB_RGB_COLORS, (void**)&pixels, NULL, 0);
+    HDC hdcMem = CreateCompatibleDC(hdc);
+    SelectObject(hdcMem, hBitmap);
+
+    static uint32_t bkColor = 0xFF000000 | AppConst::BACKGROUND_COLOR;
+    for(size_t i = 0; i < mDrawWidth*mDrawHeight; i++){
+        pixels[i] = bkColor;
+    }
+
+    const static int& lineOffset = AppConst::BORDER_LINE_OFFSET;
+    const static int& lineCount = AppConst::BORDER_LINE_COUNT;
+    const static uint32_t* BitColor = AppConst::BitColor;
+
+    float xStart = lineOffset + lineCount;
+    float yStart = lineOffset + lineCount;
+    float xMax = mDrawWidth  - lineOffset - lineCount;
+    float yMax = mDrawHeight - lineOffset - lineCount;
+    size_t x = 0;
+    size_t y = 0;
+    uint8_t bits[4] = {0};
+    for(char hexChar: hexString){
+        AppUtil::HexCharToBits(hexChar, bits);
+        pixels[y * mDrawWidth + x++] = BitColor[bits[0]];
+        pixels[y * mDrawWidth + x++] = BitColor[bits[1]];
+        pixels[y * mDrawWidth + x++] = BitColor[bits[2]];
+        pixels[y * mDrawWidth + x++] = BitColor[bits[3]];
+        if(x >= mDrawWidth){
+            x = 0;
+            y += 1;
+        }
+    }
+
+    BitBlt(hdc, xStart, yStart, mDrawWidth, mDrawHeight, hdcMem, 0, 0, SRCCOPY);
+    DeleteDC(hdcMem);
+    DeleteObject(hBitmap);
+}
 
 
