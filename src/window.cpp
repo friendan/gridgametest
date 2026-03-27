@@ -779,12 +779,12 @@ bool snake::Application::initApp(HINSTANCE hInst, int nCmdShow)
 	// Bottom left
 	this->m_tiles.obstacleTiles.emplace_back(
 		this->m_tileSzF,
-		dx::SzF{ 0.f, this->m_tileSzF.height * (this->s_fieldHeight - 1.f) },
+		dx::SzF{ 0.f, this->m_tileSzF.height * (this->s_fieldHeight - 10.f) },
 		dx::SzU{ 6, 1 }
 	);
 	this->m_tiles.obstacleTiles.emplace_back(
 		this->m_tileSzF,
-		dx::SzF{ 0.f, this->m_tileSzF.height * (this->s_fieldHeight - 6.f) },
+		dx::SzF{ 0.f, this->m_tileSzF.height * (this->s_fieldHeight - 9.f) },
 		dx::SzU{ 1, 5 }
 	);
 
@@ -793,7 +793,7 @@ bool snake::Application::initApp(HINSTANCE hInst, int nCmdShow)
 		this->m_tileSzF,
 		dx::SzF{
 			this->m_tileSzF.width  * (this->s_fieldWidth  - 6.f),
-			this->m_tileSzF.height * (this->s_fieldHeight - 1.f)
+			this->m_tileSzF.height * (this->s_fieldHeight - 10.f)
 		},
 		dx::SzU{ 6, 1 }
 	);
@@ -801,7 +801,7 @@ bool snake::Application::initApp(HINSTANCE hInst, int nCmdShow)
 		this->m_tileSzF,
 		dx::SzF{
 			this->m_tileSzF.width  * (this->s_fieldWidth  - 1.f),
-			this->m_tileSzF.height * (this->s_fieldHeight - 6.f)
+			this->m_tileSzF.height * (this->s_fieldHeight - 9.f)
 		},
 		dx::SzU{ 1, 5 }
 	);
