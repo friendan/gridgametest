@@ -141,6 +141,14 @@ void DrawGrid::DrawHexString(HWND hwnd, HDC hdc){
     float yStart = lineOffset + lineCount;
     float xMax = mDrawWidth  - lineOffset - lineCount;
     float yMax = mDrawHeight - lineOffset - lineCount;
+
+    AppUtil::SaveLog("hexString:", hexString);
+    AppUtil::SaveLog("mWidth:", mWidth, " mHeight:", mHeight);
+    AppUtil::SaveLog("mDrawWidth:", mDrawWidth, " mDrawHeight:", mDrawHeight);
+    AppUtil::SaveLog("xStart:", xStart, " yStart:", yStart);
+    AppUtil::SaveLog("xMax:", xMax, " yMax:", yMax);
+    AppUtil::SaveLog("mPageSize:", mPageSize, " mCurPage:", mCurPage);
+
     size_t x = 0;
     size_t y = 0;
     uint8_t bits[4] = {0};
