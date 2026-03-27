@@ -13,7 +13,7 @@ namespace snake
 	{
 	private:
 		friend class Logic;
-
+		HWND m_hStatusBar{ nullptr };  // 状态栏句柄
 		static constexpr std::wstring_view s_applicationName{ L"SnakeD2D" },
 			s_className{ L"SnakeDirect2DClass" };
 
@@ -259,6 +259,13 @@ namespace snake
 		void playSnd(std::uint16_t rsc) const noexcept;
 		void playSndAsync(std::uint16_t rsc) const noexcept;
 		void CenterWindowOnMonitor(HWND hWnd);
+
+		 // 状态栏
+	    bool CreateStatusBar();
+	    void UpdateStatusBarText(int part, LPCWSTR text);
+	    void UpdateStatusBarText(int part, std::string& text);
+	    void ResizeStatusBar();
+
 	};
 
 }

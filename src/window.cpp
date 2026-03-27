@@ -1,10 +1,14 @@
 #include "window.hpp"
 #include "resource.h"
 #include "DrawGrid.hpp"
+#include "AppUtil.hpp"
 
 #include <tgmath.h>
 #include <ctime>
 #include <memory>
+#include <CommCtrl.h>  // 状态栏必须的头文件
+#pragma comment(lib, "ComCtl32.lib")
+
 
 LRESULT CALLBACK snake::Application::sp_winProc(HWND hwnd, UINT uMsg, WPARAM wp, LPARAM lp) noexcept
 {
@@ -25,6 +29,7 @@ LRESULT CALLBACK snake::Application::sp_winProc(HWND hwnd, UINT uMsg, WPARAM wp,
 				::DestroyWindow(hwnd);
 			}
 
+			This->CreateStatusBar();
 			This->CenterWindowOnMonitor(hwnd);
 			return 0;
 		}
@@ -85,6 +90,7 @@ LRESULT CALLBACK snake::Application::sp_winProc(HWND hwnd, UINT uMsg, WPARAM wp,
 		RECT r;
 		::GetClientRect(hwnd, &r);
 		This->onResize(r.right - r.left, r.bottom - r.top);
+		This->ResizeStatusBar();
 		break;
 	}
 	case WM_DPICHANGED:
@@ -1139,10 +1145,18 @@ void snake::Application::onRender() noexcept
 }
 void snake::Application::onResize(UINT width, UINT height) noexcept
 {
-	if (this->m_pRT == nullptr) [[unlikely]]
+	if (this->m_pRT == nullptr)
 	{
 		return;
 	}
+
+	 // 减去状态栏高度
+    if (m_hStatusBar)
+    {
+        RECT rcStatus;
+        GetWindowRect(m_hStatusBar, &rcStatus);
+        height -= rcStatus.bottom - rcStatus.top;
+    }
 
 	this->m_pRT->Resize(dx::SzU{ width, height });
 	this->p_calcPositions();
@@ -1351,4 +1365,76 @@ void snake::Application::CenterWindowOnMonitor(HWND hWnd){
         0,
         SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE
     );
+}
+
+bool snake::Application::CreateStatusBar()
+{
+    // 创建状态栏
+    m_hStatusBar = CreateWindowExW(
+        0,
+        STATUSCLASSNAMEW,
+        L"",
+        WS_CHILD | WS_VISIBLE | SBARS_SIZEGRIP,
+        0, 0, 0, 0,
+        m_hwnd,
+        nullptr,
+        m_hInst,
+        nullptr
+    );
+
+    if (!m_hStatusBar)
+        return false;
+
+    // 初始化 5栏布局
+    ResizeStatusBar();
+
+    // 设置默认文字
+    // UpdateStatusBarText(0, L"准备");
+    // UpdateStatusBarText(1, L"长度: 0");
+    // UpdateStatusBarText(2, L"分数: 0");
+    // UpdateStatusBarText(3, L"时间: 00:00");
+    // UpdateStatusBarText(4, L"Made with SnakeD2D");
+    return true;
+}
+
+void snake::Application::ResizeStatusBar()
+{
+    if (!m_hStatusBar)
+        return;
+
+    // 获取客户区宽度
+    RECT rcClient;
+    GetClientRect(m_hwnd, &rcClient);
+    int width = rcClient.right - rcClient.left;
+
+    // 5栏：最后一栏自动占满
+    const int parts = 5;
+    int rightEdges[parts] = { 0 };
+
+    // 前4栏固定宽度
+    rightEdges[0] = 80;
+    rightEdges[1] = 160;
+    rightEdges[2] = 240;
+    rightEdges[3] = 320;
+    rightEdges[4] = -1; // 最后一栏自动填满
+
+    // 通知状态栏
+    SendMessageW(m_hStatusBar, SB_SETPARTS, parts, (LPARAM)rightEdges);
+}
+
+void snake::Application::UpdateStatusBarText(int part, LPCWSTR text)
+{
+    if (!m_hStatusBar)
+        return;
+    SendMessageW(
+        m_hStatusBar,
+        SB_SETTEXTW,
+        part,
+        (LPARAM)text
+    );
+}
+
+void snake::Application::UpdateStatusBarText(int part, std::string& text){
+	std::wstring wstr = AppUtil::StrToWStr(text);
+	UpdateStatusBarText(part, wstr.c_str());
 }
