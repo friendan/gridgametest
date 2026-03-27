@@ -25,6 +25,7 @@ LRESULT CALLBACK snake::Application::sp_winProc(HWND hwnd, UINT uMsg, WPARAM wp,
 				::DestroyWindow(hwnd);
 			}
 
+			This->CenterWindowOnMonitor(hwnd);
 			return 0;
 		}
 		else [[unlikely]]
@@ -1170,6 +1171,10 @@ LRESULT snake::Application::onKeyPress(WPARAM wp, LPARAM lp) noexcept
 			return 0;
 		}
 		break;
+	case VK_F5:{
+		this->CenterWindowOnMonitor(this->m_hwnd);
+		break;
+	}
 	case VK_F6:{
 		mIsDrawGame = false;
 		this->m_snakeLogic.m_sInfo.scoring.paused = 1;
@@ -1312,4 +1317,38 @@ void snake::Application::playSnd(std::uint16_t rsc) const noexcept
 void snake::Application::playSndAsync(std::uint16_t rsc) const noexcept
 {
 	snake::playSndRscAsync(rsc, this->m_hInst);
+}
+
+
+void snake::Application::CenterWindowOnMonitor(HWND hWnd){
+	if (!hWnd)
+        return;
+
+    // 获取窗口当前所在的显示器句柄
+    HMONITOR hMonitor = MonitorFromWindow(hWnd, MONITOR_DEFAULTTONEAREST);
+    if (!hMonitor)
+        return;
+
+    // 获取该显示器的工作区（不包含任务栏/系统栏）
+    MONITORINFO monitorInfo = { 0 };
+    monitorInfo.cbSize = sizeof(MONITORINFO);
+    GetMonitorInfo(hMonitor, &monitorInfo);
+    RECT rcWork = monitorInfo.rcWork;
+
+    RECT rcWindow;
+    GetWindowRect(hWnd, &rcWindow);
+    int winWidth = rcWindow.right - rcWindow.left;
+    int winHeight = rcWindow.bottom - rcWindow.top;
+
+    int posX = rcWork.left + (rcWork.right - rcWork.left - winWidth) / 2;
+    int posY = rcWork.top + (rcWork.bottom - rcWork.top - winHeight) / 2;
+    SetWindowPos(
+        hWnd,
+        NULL,
+        posX,
+        posY,
+        0,
+        0,
+        SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE
+    );
 }
