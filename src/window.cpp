@@ -90,7 +90,13 @@ LRESULT CALLBACK snake::Application::sp_winProc(HWND hwnd, UINT uMsg, WPARAM wp,
 		RECT r;
 		::GetClientRect(hwnd, &r);
 		This->onResize(r.right - r.left, r.bottom - r.top);
-		This->ResizeStatusBar();
+		
+		if (This->m_hStatusBar) {
+	        // 强制状态栏调整位置
+	        SetWindowPos(This->m_hStatusBar, nullptr, 0, 0, 0, 0,
+	            SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+	        This->ResizeStatusBar();
+	    }
 		break;
 	}
 	case WM_DPICHANGED:
@@ -1369,12 +1375,18 @@ void snake::Application::CenterWindowOnMonitor(HWND hWnd){
 
 bool snake::Application::CreateStatusBar()
 {
+    // 初始化公共控件
+    INITCOMMONCONTROLSEX icex{ 0 };
+    icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
+    icex.dwICC = ICC_BAR_CLASSES;
+    InitCommonControlsEx(&icex);
+
     // 创建状态栏
     m_hStatusBar = CreateWindowExW(
         0,
         STATUSCLASSNAMEW,
         L"",
-        WS_CHILD | WS_VISIBLE | SBARS_SIZEGRIP,
+        WS_CHILD | WS_VISIBLE | CCS_BOTTOM | SBARS_SIZEGRIP,
         0, 0, 0, 0,
         m_hwnd,
         nullptr,
@@ -1385,15 +1397,16 @@ bool snake::Application::CreateStatusBar()
     if (!m_hStatusBar)
         return false;
 
-    // 初始化 5栏布局
+    // 立即设置分栏
     ResizeStatusBar();
 
-    // 设置默认文字
-    // UpdateStatusBarText(0, L"准备");
-    // UpdateStatusBarText(1, L"长度: 0");
-    // UpdateStatusBarText(2, L"分数: 0");
-    // UpdateStatusBarText(3, L"时间: 00:00");
-    // UpdateStatusBarText(4, L"Made with SnakeD2D");
+    // 设置默认文本
+    // UpdateStatusBarText(0, L" 游戏状态");
+    // UpdateStatusBarText(1, L" 长度: 5");
+    // UpdateStatusBarText(2, L" 分数: 0");
+    // UpdateStatusBarText(3, L" 时间: 00:00");
+    // UpdateStatusBarText(4, L" SnakeD2D 运行中");
+
     return true;
 }
 
@@ -1429,7 +1442,7 @@ void snake::Application::UpdateStatusBarText(int part, LPCWSTR text)
     SendMessageW(
         m_hStatusBar,
         SB_SETTEXTW,
-        part,
+        part|SBT_POPOUT,
         (LPARAM)text
     );
 }
