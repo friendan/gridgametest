@@ -86,16 +86,16 @@ LRESULT CALLBACK snake::Application::sp_winProc(HWND hwnd, UINT uMsg, WPARAM wp,
 	}
 	case WM_SIZE:
 	{
+		// 先让系统给状态栏排版
+	    if (This->m_hStatusBar)
+	    {
+	        SendMessage(This->m_hStatusBar, WM_SIZE, 0, 0);
+	    }
+
+	    // 再拿到【真正可用的】客户区
 		RECT r;
 		::GetClientRect(hwnd, &r);
 		This->onResize(r.right - r.left, r.bottom - r.top);
-		
-		if (This->m_hStatusBar) {
-	        // 强制状态栏调整位置
-	        SetWindowPos(This->m_hStatusBar, nullptr, 0, 0, 0, 0,
-	            SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
-	        This->ResizeStatusBar();
-	    }
 		break;
 	}
 	case WM_DPICHANGED:
