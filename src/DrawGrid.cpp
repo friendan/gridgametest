@@ -34,7 +34,7 @@ void DrawGrid::DrawInit(HWND hwnd, HDC hdc){
     RECT rcClient{};
     GetClientRect(hwnd, &rcClient);
     mWidth = rcClient.right - rcClient.left;
-    mHeight = rcClient.bottom - rcClient.top;
+    mHeight = rcClient.bottom - rcClient.top - AppConst::TASKBAR_HEIGHT;
 
     static int lineOffset = AppConst::BORDER_LINE_OFFSET;
     static int lineCount = AppConst::BORDER_LINE_COUNT;

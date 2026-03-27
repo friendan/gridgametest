@@ -13,6 +13,7 @@ namespace AppConst
 	constexpr COLORREF BACKGROUND_COLOR  = RGB(128, 128, 128);
 
 	constexpr uint32_t BitColor[2] = { 0xFF000000, 0xFFFFFFFF};
+	constexpr uint32_t TASKBAR_HEIGHT = 26;
 
 
 }

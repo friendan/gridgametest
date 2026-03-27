@@ -1425,15 +1425,16 @@ void snake::Application::ResizeStatusBar()
     RECT rcClient;
     GetClientRect(m_hwnd, &rcClient);
 
-    // 5栏
-    const int cnt = 5;
-    int parts[cnt] = {
-        100,
-        200,
-        300,
-        400,
-        -1  // 自动拉伸
-    };
+    // 6栏
+    const int cnt = 6;
+	int parts[cnt] = {
+	    100,   // 第1栏：0~100
+	    200,   // 第2栏：100~200
+	    300,   // 第3栏：200~300
+	    400,   // 第4栏：300~400
+	    500,   // 第5栏：400~500
+	    -1     // 第6栏：500~结尾（自动拉伸）
+	};
 
     SendMessageW(m_hStatusBar, SB_SETPARTS, cnt, (LPARAM)parts);
 
