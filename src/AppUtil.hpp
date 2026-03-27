@@ -54,5 +54,15 @@ public:
      */
     static bool WriteHexStringToFile(const std::string& hexStr, const std::string& strFilePath);
     static bool WriteHexStringToFile(const std::string& hexStr, const std::wstring& wstrFilePath);
+
+    /**
+     * @brief 按分页方式获取子字符串
+     * @param str 原始字符串
+     * @param pageSize 每页字符数
+     * @param pageNum  也码(从1开始)
+     * @return 返回指定页的字符串
+     */
+    static std::string GetSubStrByPage(const std::string& str, size_t pageSize, size_t pageNum);
+
 	
 };

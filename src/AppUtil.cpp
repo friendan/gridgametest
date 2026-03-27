@@ -137,7 +137,21 @@ bool AppUtil::WriteHexStringToFile(const std::string& hexStr, const std::wstring
     return AppUtil::WriteHexStringToFile(hexStr, WStrToStr(wstrFilePath));
 }
 
-
+std::string AppUtil::GetSubStrByPage(const std::string& str, size_t pageSize, size_t pageNum){
+    if(str.empty() || pageSize < 1 || pageNum < 1){
+        return "";
+    }
+    size_t totalPages = (str.size() + pageSize - 1) / pageSize;
+    if(pageNum > totalPages){
+        return "";
+    }
+    size_t startPos = (pageNum - 1)*pageSize;
+    size_t endPos = startPos + pageSize;
+    if(endPos > str.size()){
+        endPos = str.size();
+    }
+    return str.substr(startPos, endPos - startPos);
+}
 
 
 
