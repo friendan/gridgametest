@@ -31,7 +31,26 @@ void DrawGrid::UninitGdiPlus()
 }
 
 void DrawGrid::DrawInit(HWND hwnd, HDC hdc){
+    RECT rcClient{};
+    GetClientRect(hwnd, &rcClient);
+    mWidth = rcClient.right - rcClient.left;
+    mHeight = rcClient.bottom - rcClient.top;
 
+    static int lineOffset = AppConst::BORDER_LINE_OFFSET;
+    static int lineCount = AppConst::BORDER_LINE_COUNT;
+    mDrawWidth  = mWidth  - lineOffset*2 - lineCount*2 + 1;
+    mDrawHeight = mHeight - lineOffset*2 - lineCount*2 + 1;
+
+    mPageSize = mDrawWidth*mDrawHeight / 4;
+    if(mPageSize > 0){
+        mTotalPage = mHexString.size() / mPageSize;
+        if(mHexString.size() % mPageSize != 0){
+            mTotalPage += 1;
+        }
+    }
+    if(mTotalPage < 1){
+        mTotalPage = 1;
+    }
 }
 
 void DrawGrid::DrawBorder(HWND hwnd, HDC hdc)
