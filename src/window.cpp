@@ -30,6 +30,7 @@ LRESULT CALLBACK snake::Application::sp_winProc(HWND hwnd, UINT uMsg, WPARAM wp,
 			}
 
 			This->CenterWindowOnMonitor(hwnd);
+			This->UpdateWindowTitle();
 			return 0;
 		}
 		else [[unlikely]]
@@ -96,6 +97,7 @@ LRESULT CALLBACK snake::Application::sp_winProc(HWND hwnd, UINT uMsg, WPARAM wp,
 		RECT r;
 		::GetClientRect(hwnd, &r);
 		This->onResize(r.right - r.left, r.bottom - r.top);
+		This->UpdateWindowTitle();
 		break;
 	}
 	case WM_DPICHANGED:
@@ -1463,3 +1465,35 @@ void snake::Application::UpdateStatusBarText(int part, std::string& text){
 	std::wstring wstr = AppUtil::StrToWStr(text);
 	UpdateStatusBarText(part, wstr.c_str());
 }
+
+
+void snake::Application::UpdateWindowTitle()
+{
+    if (!m_hwnd) return;
+    RECT rcClient;
+    GetClientRect(m_hwnd, &rcClient);
+    int w = rcClient.right - rcClient.left;
+    int h = rcClient.bottom - rcClient.top;
+
+    // 扣除状态栏高度（可选，看你想显示什么高度）
+    // if (m_hStatusBar)
+    // {
+    //     RECT rcStatus;
+    //     GetWindowRect(m_hStatusBar, &rcStatus);
+    //     h -= rcStatus.bottom - rcStatus.top;
+    // }
+
+    wchar_t title[256];
+    swprintf_s(title, L"SnakeGame %dx%d", w, h);
+    SetWindowTextW(m_hwnd, title);
+}
+
+
+
+
+
+
+
+
+
+

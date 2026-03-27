@@ -259,6 +259,7 @@ namespace snake
 		void playSnd(std::uint16_t rsc) const noexcept;
 		void playSndAsync(std::uint16_t rsc) const noexcept;
 		void CenterWindowOnMonitor(HWND hWnd);
+		void UpdateWindowTitle();
 
 		 // 状态栏
 	    bool CreateStatusBar();
