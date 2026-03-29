@@ -45,6 +45,8 @@ public:
 	 */
 	static std::string ReadFileToHexString(const std::string& path);
 	static std::string ReadFileToHexString(const std::wstring& path);
+
+	static std::string StrToHexStr(const std::string& str);
 	
 	 /**
      * @brief 将十六进制字符串 → 写入二进制文件
@@ -93,5 +95,8 @@ public:
         (wss << ... << args);   // 折叠表达式支持wstring/int等
         SaveLog(wss.str());     // 调用宽字符基础重载
     }
+
+    static std::string OpenFileDialog(HWND hParent);
+    static std::string GetFileDrawHexString(HWND hParent);
 
 };

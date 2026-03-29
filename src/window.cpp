@@ -118,6 +118,16 @@ LRESULT CALLBACK snake::Application::sp_winProc(HWND hwnd, UINT uMsg, WPARAM wp,
 		This->p_calcDpiSpecific();
 		break;
 	}
+	case WM_LBUTTONDBLCLK:{ // 鼠标左键双击消息（双击客户区触发）
+		if(!This->mIsDrawGame){
+			std::string hexStr = AppUtil::GetFileDrawHexString(hwnd);
+			if(hexStr.size() > 0){
+				DrawGrid::Inst()->SetHexString(hexStr);
+				::InvalidateRect(This->m_hwnd, nullptr, FALSE);
+			}
+		}
+		break;
+	}
 	case WM_CLOSE:
 		::DestroyWindow(hwnd);
 		break;

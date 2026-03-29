@@ -6,6 +6,8 @@
 #include <sstream>
 #include <iomanip>
 #include <mutex>
+#include <filesystem>
+namespace fs = std::filesystem;
 
 uint8_t AppUtil::HexCharToBits(char hexChar)
 {
@@ -96,6 +98,23 @@ std::string AppUtil::ReadFileToHexString(const std::wstring& path)
     return AppUtil::ReadFileToHexString(strFilePath);
 }
 
+std::string AppUtil::StrToHexStr(const std::string& str){
+    if(str.empty()) return "";
+    std::string hexString;
+    hexString.reserve(static_cast<size_t>(str.size()) * 2);
+
+    // 十六进制字符表（查表法，最快）
+    static const char hexTable[] = "0123456789ABCDEF";
+
+    // 纯内存操作，无任何格式化开销 → 速度极快
+    for (uint8_t byte : str)
+    {
+        hexString += hexTable[byte >> 4];    // 高4位
+        hexString += hexTable[byte & 0x0F];  // 低4位
+    }
+    return hexString;
+}
+
 bool AppUtil::WriteHexStringToFile(const std::string& hexStr, const std::string& strFilePath)
 {
     if (hexStr.empty() || hexStr.size() % 2 != 0) {
@@ -180,5 +199,35 @@ void AppUtil::SaveLog(const std::string& msg){
 
 void AppUtil::SaveLog(const std::wstring& msg){
     write_log(WStrToStr(msg));
+}
+
+std::string AppUtil::OpenFileDialog(HWND hParent){
+    char szFilePath[MAX_PATH] = { 0 };
+    OPENFILENAMEA ofn = { 0 };
+    ofn.lStructSize = sizeof(OPENFILENAMEA);
+    ofn.hwndOwner = hParent;
+    ofn.lpstrFile = szFilePath;
+    ofn.nMaxFile = MAX_PATH;
+    // 文件类型过滤器
+    // ofn.lpstrFilter = "所有文件(*.*)\0*.*\0文本文件(*.txt)\0*.txt\0";
+    ofn.lpstrFilter = "所有文件(*.*)\0*.*\0";
+    ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY; // 必须存在文件、路径，隐藏只读选项
+    if (GetOpenFileNameA(&ofn))
+    {
+        return std::string(szFilePath);
+    }
+    return "";
+}
+
+std::string AppUtil::GetFileDrawHexString(HWND hParent){
+    std::string filePath = AppUtil::OpenFileDialog(hParent);
+    if(filePath.empty()) return "";
+
+    std::string fileHexStr = AppUtil::ReadFileToHexString(filePath);
+    std::string fileName = fs::path(filePath).filename().string();
+    std::string fileNameHexStr = AppUtil::StrToHexStr(fileName);
+    std::ostringstream oss;
+    oss << fileNameHexStr << ".end" << fileHexStr;
+    return oss.str();
 }
 

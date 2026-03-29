@@ -92,6 +92,7 @@ void DrawGrid::DrawPixGrid(HWND hwnd){
 
 void DrawGrid::SetHexString(const std::string& hexString){
     mHexString = hexString;
+    mCurPage = 1;
 }
 
 void DrawGrid::NextPage(){
