@@ -69,9 +69,7 @@ std::string AppUtil::ReadFileToHexString(const std::string& path)
     if (!file.is_open()) {
        return {};
     }
-
-    std::streamsize fileSize = file.tellg();
-    file.seekg(0);
+    size_t fileSize = fs::file_size(path);
 
     // 一次性读取全部数据（比流方式快非常多）
     std::string binaryData;
@@ -227,11 +225,22 @@ std::string AppUtil::GetFileDrawHexString(HWND hParent){
 
     AppUtil::DrawFileSize = fs::file_size(filePath);
     std::string fileHexStr = AppUtil::ReadFileToHexString(filePath);
+    if(fileHexStr.empty()){
+        AppUtil::SaveLog("fileHexStr is empty: ", filePath);
+        return "";
+    }
+
     std::string fileName = fs::path(filePath).filename().string();
     std::string fileNameHexStr = AppUtil::StrToHexStr(fileName);
     std::string endHexStr = AppUtil::StrToHexStr(".end");
     std::ostringstream oss;
     oss << fileNameHexStr << endHexStr << fileHexStr;
+
+    // AppUtil::SaveLog("filePath ", filePath);
+    AppUtil::SaveLog("fileNameHexStr ", fileNameHexStr);
+    AppUtil::SaveLog("endHexStr ", endHexStr);
+    // AppUtil::SaveLog("fileHexStr ", fileHexStr);
+
     return oss.str();
 }
 
