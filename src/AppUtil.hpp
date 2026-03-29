@@ -100,4 +100,6 @@ public:
     static std::string GetFileDrawHexString(HWND hParent);
     static size_t DrawFileSize;
 
+    static std::string StringToLen256(const std::string& str);
+
 };
