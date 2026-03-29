@@ -102,6 +102,19 @@ void DrawGrid::NextPage(){
     }
 }
 
+void DrawGrid::ChangePage(int chVal){
+    if(mCurPage < 1){
+        mCurPage = 1;
+    }
+    mCurPage += chVal;
+    if(mCurPage > mTotalPage){
+        mCurPage = mTotalPage;
+    }
+   if(mCurPage < 1){
+        mCurPage = 1;
+    }
+}
+
 void DrawGrid::DrawHexString(HWND hwnd, HDC hdc){
     if(mWidth < 1 || mHeight < 1 || mPageSize < 1 || mHexString.empty() || mHexString.size() % 2 != 0){
         AppUtil::SaveLog("DrawHexString param error");

@@ -1191,7 +1191,29 @@ void snake::Application::onResize(UINT width, UINT height) noexcept
 }
 
 LRESULT snake::Application::onKeyPress(WPARAM wp, LPARAM lp) noexcept
-{
+{	
+	if(!mIsDrawGame){
+		if(wp == VK_OEM_MINUS || wp == VK_SUBTRACT){
+	        // VK_OEM_MINUS 主键盘减号
+	        // VK_SUBTRACT  小键盘减号
+	        DrawGrid::Inst()->ChangePage(-1);
+	        ::InvalidateRect(this->m_hwnd, nullptr, FALSE);
+	        return 0;
+	    }
+	    if(wp == VK_ADD){
+            // 小键盘加号
+            DrawGrid::Inst()->ChangePage(1);
+            ::InvalidateRect(this->m_hwnd, nullptr, FALSE);
+	        return 0;
+        }
+        if(wp == VK_OEM_PLUS){ // && (GetKeyState(VK_SHIFT) & 0x8000)
+            // 主键盘加号（等号键）
+            DrawGrid::Inst()->ChangePage(1);
+            ::InvalidateRect(this->m_hwnd, nullptr, FALSE);
+        }
+	}
+	
+
 	Logic::direction dir{};
 	switch (wp)
 	{
@@ -1214,7 +1236,7 @@ LRESULT snake::Application::onKeyPress(WPARAM wp, LPARAM lp) noexcept
 			return 0;
 		}
 		break;
-	case VK_SPACE:{
+	case VK_SPACE:{ // 按空格键
 		if(!mIsDrawGame){
 			DrawGrid::Inst()->NextPage();
 			::InvalidateRect(this->m_hwnd, nullptr, FALSE);

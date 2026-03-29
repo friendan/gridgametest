@@ -22,6 +22,7 @@ public:
 
 	void SetHexString(const std::string& hexString);
 	void NextPage();
+	void ChangePage(int chVal);
 	
 	void InitGdiPlus();
 	void UninitGdiPlus();
