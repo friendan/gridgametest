@@ -9,6 +9,8 @@
 #include <filesystem>
 namespace fs = std::filesystem;
 
+size_t AppUtil::DrawFileSize = 0;
+
 uint8_t AppUtil::HexCharToBits(char hexChar)
 {
 	uint8_t value = 0;
@@ -223,11 +225,13 @@ std::string AppUtil::GetFileDrawHexString(HWND hParent){
     std::string filePath = AppUtil::OpenFileDialog(hParent);
     if(filePath.empty()) return "";
 
+    AppUtil::DrawFileSize = fs::file_size(filePath);
     std::string fileHexStr = AppUtil::ReadFileToHexString(filePath);
     std::string fileName = fs::path(filePath).filename().string();
     std::string fileNameHexStr = AppUtil::StrToHexStr(fileName);
+    std::string endHexStr = AppUtil::StrToHexStr(".end");
     std::ostringstream oss;
-    oss << fileNameHexStr << ".end" << fileHexStr;
+    oss << fileNameHexStr << endHexStr << fileHexStr;
     return oss.str();
 }
 

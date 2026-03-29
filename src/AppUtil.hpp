@@ -98,5 +98,6 @@ public:
 
     static std::string OpenFileDialog(HWND hParent);
     static std::string GetFileDrawHexString(HWND hParent);
+    static size_t DrawFileSize;
 
 };

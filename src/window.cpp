@@ -119,8 +119,10 @@ LRESULT CALLBACK snake::Application::sp_winProc(HWND hwnd, UINT uMsg, WPARAM wp,
 		break;
 	}
 	case WM_LBUTTONDBLCLK:{ // 鼠标左键双击消息（双击客户区触发）
+		AppUtil::SaveLog("WM_LBUTTONDBLCLK mIsDrawGame ", This->mIsDrawGame);
 		if(!This->mIsDrawGame){
 			std::string hexStr = AppUtil::GetFileDrawHexString(hwnd);
+			AppUtil::SaveLog("hexStr.size() ", hexStr.size());
 			if(hexStr.size() > 0){
 				DrawGrid::Inst()->SetHexString(hexStr);
 				::InvalidateRect(This->m_hwnd, nullptr, FALSE);
@@ -708,7 +710,7 @@ bool snake::Application::initApp(HINSTANCE hInst, int nCmdShow)
 	WNDCLASSEXW w{};
 
 	w.cbSize        = sizeof w;
-	w.style         = CS_HREDRAW | CS_VREDRAW;
+	w.style         = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
 	w.lpfnWndProc   = &this->sp_winProc;
 	w.hInstance     = hInst;
 	w.hCursor       = ::LoadCursorW(nullptr, IDC_ARROW);
@@ -1528,6 +1530,9 @@ void snake::Application::UpdateDrawGridInfo(){
 
     swprintf_s(wszBuff, L"%zu | %zu", pDrawGrid->mTotalPage, pDrawGrid->mCurPage);
     UpdateStatusBarText(2, wszBuff);
+    
+    swprintf_s(wszBuff, L"%zu", AppUtil::DrawFileSize);
+    UpdateStatusBarText(3, wszBuff);
 }
 
 
