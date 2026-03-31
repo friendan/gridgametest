@@ -176,13 +176,13 @@ void DrawGrid::DrawHexString(HWND hwnd, HDC hdc){
 
         AppUtil::SaveLog("hexChar:", hexChar
             , " x y ", x-4, " ", y
-            , " BitColor: "
-            , BitColor[bits[0]], " "
-            , BitColor[bits[1]], " "
-            , BitColor[bits[2]], " "
-            , BitColor[bits[3]]
+            , " bits: "
+            , bits[0], " "
+            , bits[1], " "
+            , bits[2], " "
+            , bits[3]
         );
-
+        
         if(x >= mDrawWidth){
             x = 0;
             y += 1;
