@@ -162,6 +162,7 @@ void DrawGrid::DrawHexString(HWND hwnd, HDC hdc){
     AppUtil::SaveLog("xStart:", xStart, " yStart:", yStart);
     AppUtil::SaveLog("xMax:", xMax, " yMax:", yMax);
     AppUtil::SaveLog("mPageSize:", mPageSize, " mCurPage:", mCurPage);
+    AppUtil::SaveLog("bitTotal:", hexString.size()*4);
 
     size_t x = 0;
     size_t y = 0;
@@ -172,6 +173,16 @@ void DrawGrid::DrawHexString(HWND hwnd, HDC hdc){
         pixels[y * mDrawWidth + x++] = BitColor[bits[1]];
         pixels[y * mDrawWidth + x++] = BitColor[bits[2]];
         pixels[y * mDrawWidth + x++] = BitColor[bits[3]];
+
+        AppUtil::SaveLog("hexChar:", hexChar
+            , " x y ", x-4, " ", y
+            , " BitColor: "
+            , BitColor[bits[0]], " "
+            , BitColor[bits[1]], " "
+            , BitColor[bits[2]], " "
+            , BitColor[bits[3]]
+        );
+
         if(x >= mDrawWidth){
             x = 0;
             y += 1;
