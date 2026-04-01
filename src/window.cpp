@@ -1556,11 +1556,11 @@ void snake::Application::UpdateDrawGridInfo(){
     swprintf_s(wszBuff, L"%zu", AppUtil::DrawFileSize);
     UpdateStatusBarText(3, wszBuff);
 
-    std::wstring whexStr = AppUtil::StrToWStr(pDrawGrid->mHexString);
-    if(whexStr.size() > 0){
-    	swprintf_s(wszBuff, L"%s", whexStr.substr(0,128).c_str());
-    	UpdateStatusBarText(5, wszBuff);
-    }
+    // std::wstring whexStr = AppUtil::StrToWStr(pDrawGrid->mHexString);
+    // if(whexStr.size() > 0){
+    // 	swprintf_s(wszBuff, L"%s", whexStr.substr(0,128).c_str());
+    // 	UpdateStatusBarText(5, wszBuff);
+    // }
 }
 
 

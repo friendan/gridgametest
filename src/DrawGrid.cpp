@@ -16,6 +16,11 @@ using namespace Gdiplus;
 void DrawGrid::InitGdiPlus()
 {
     GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+
+    // mHexString = "";
+    // for(int cnt = 1; cnt <= 18; cnt++){
+    //     mHexString += "0123456789ABCDEF";
+    // }
 }
 
 //=============================================================================
@@ -164,29 +169,33 @@ void DrawGrid::DrawHexString(HWND hwnd, HDC hdc){
     AppUtil::SaveLog("mPageSize:", mPageSize, " mCurPage:", mCurPage);
     AppUtil::SaveLog("bitTotal:", hexString.size()*4);
 
-    size_t x = 0;
-    size_t y = 0;
+    // 碰到的问题：
+    // 行尾剩余空间 不足 4 个像素 时
+    // 你依然强行写 4 个
+    // 直接越界写到下一行，覆盖数据
+
+    // 严格按顺序往 pixels 数组里线性填充（0 → 1 → 2 → 3 → ... 一直往后写）
+    // 不需要判断一行够不够 4 个像素
+    // 不需要自动换行
+    // 数组空间一定足够，只管顺序写满
+
+    size_t index = 0;
     uint8_t bits[4] = {0};
     for(char hexChar: hexString){
         AppUtil::HexCharToBits(hexChar, bits);
-        pixels[y * mDrawWidth + x++] = BitColor[bits[0]];
-        pixels[y * mDrawWidth + x++] = BitColor[bits[1]];
-        pixels[y * mDrawWidth + x++] = BitColor[bits[2]];
-        pixels[y * mDrawWidth + x++] = BitColor[bits[3]];
+        pixels[index++] = BitColor[bits[0]];
+        pixels[index++] = BitColor[bits[1]];
+        pixels[index++] = BitColor[bits[2]];
+        pixels[index++] = BitColor[bits[3]];
 
         AppUtil::SaveLog("hexChar:", hexChar
-            , " x y ", x-4, " ", y
+            , " index: ", index
             , " bits: "
             , bits[0], " "
             , bits[1], " "
             , bits[2], " "
             , bits[3]
         );
-        
-        if(x >= mDrawWidth){
-            x = 0;
-            y += 1;
-        }
     }
 
     BitBlt(hdc, xStart, yStart, mDrawWidth, mDrawHeight, hdcMem, 0, 0, SRCCOPY);
