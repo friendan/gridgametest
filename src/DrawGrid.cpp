@@ -148,10 +148,10 @@ void DrawGrid::DrawHexString(HWND hwnd, HDC hdc){
         return;
     }
 
-    // 获取当前页的十六进制字符串
-    std::string hexString = AppUtil::GetSubStrByPage(mHexString, mPageSize, mCurPage);
-    if(hexString.empty()){
-        // AppUtil::SaveLog("hexString is empty mPageSize:", mPageSize, " mCurPage:", mCurPage);
+    // 获取当前页的十六进制字符串（使用视图而非复制）
+    std::string_view hexStringView = AppUtil::GetSubStrViewByPage(mHexString, mPageSize, mCurPage);
+    if(hexStringView.empty()){
+        // AppUtil::SaveLog("hexStringView is empty mPageSize:", mPageSize, " mCurPage:", mCurPage);
         return;
     }
 
@@ -163,13 +163,13 @@ void DrawGrid::DrawHexString(HWND hwnd, HDC hdc){
     int xStart = lineOffset + lineCount;
     int yStart = lineOffset + lineCount;
 
-     // AppUtil::SaveLog("hexString:", hexString);
+     // AppUtil::SaveLog("hexStringView:", hexStringView);
     // AppUtil::SaveLog("mWidth:", mWidth, " mHeight:", mHeight);
     // AppUtil::SaveLog("mDrawWidth:", mDrawWidth, " mDrawHeight:", mDrawHeight);
     // AppUtil::SaveLog("xStart:", xStart, " yStart:", yStart);
     // AppUtil::SaveLog("xMax:", xMax, " yMax:", yMax);
     // AppUtil::SaveLog("mPageSize:", mPageSize, " mCurPage:", mCurPage);
-    // AppUtil::SaveLog("bitTotal:", hexString.size()*4);
+    // AppUtil::SaveLog("bitTotal:", hexStringView.size()*4);
 
     // 碰到的问题：
     // 行尾剩余空间 不足 4 个像素 时
@@ -216,16 +216,13 @@ void DrawGrid::DrawHexString(HWND hwnd, HDC hdc){
     // 填充背景色
     static uint32_t bkColor = 0xFF000000 | AppConst::BACKGROUND_COLOR;
     size_t pixelCount = mDrawWidth * mDrawHeight;
-    // 使用 memset 批量填充背景（更高效）
-    // 注意：这里使用 memset 填充单个字节，对于 32 位颜色需要特殊处理
-    // 这里我们仍然使用循环确保正确性
     for(size_t i = 0; i < pixelCount; i++){
         cache.pixels[i] = bkColor;
     }
 
     size_t index = 0;
     uint8_t bits[4] = {0};
-    for(char hexChar: hexString){
+    for(char hexChar: hexStringView){
         AppUtil::HexCharToBits(hexChar, bits);
         cache.pixels[index++] = BitColor[bits[0]];
         cache.pixels[index++] = BitColor[bits[1]];
