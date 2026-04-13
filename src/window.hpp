@@ -38,6 +38,7 @@ namespace snake
 		dw::Factory * m_pDWriteFactory{ nullptr };
 		dx::HwndRT * m_pRT{ nullptr };
 		bool mIsDrawGame = true;
+		int mPressF6Sum = 0;
 
 		struct TilesStruct
 		{

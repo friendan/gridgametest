@@ -122,15 +122,15 @@ void DrawGrid::ChangePage(int chVal){
 
 void DrawGrid::DrawHexString(HWND hwnd, HDC hdc){
     if(mWidth < 1 || mHeight < 1 || mPageSize < 1 || mHexString.empty() || mHexString.size() % 2 != 0){
-        AppUtil::SaveLog("DrawHexString param error");
-        AppUtil::SaveLog("mWidth:", mWidth, " mHeight:", mHeight, " mPageSize:", mPageSize, " mCurPage:", mCurPage);
-        AppUtil::SaveLog("mHexString:", mHexString);
+        // AppUtil::SaveLog("DrawHexString param error");
+        // AppUtil::SaveLog("mWidth:", mWidth, " mHeight:", mHeight, " mPageSize:", mPageSize, " mCurPage:", mCurPage);
+        // AppUtil::SaveLog("mHexString:", mHexString);
         return;
     }
 
     std::string hexString = AppUtil::GetSubStrByPage(mHexString, mPageSize, mCurPage);
     if(hexString.empty()){
-        AppUtil::SaveLog("hexString is empty mPageSize:", mPageSize, " mCurPage:", mCurPage);
+        // AppUtil::SaveLog("hexString is empty mPageSize:", mPageSize, " mCurPage:", mCurPage);
         return;
     }
 
@@ -162,12 +162,12 @@ void DrawGrid::DrawHexString(HWND hwnd, HDC hdc){
     float yMax = mDrawHeight - lineOffset - lineCount;
 
     // AppUtil::SaveLog("hexString:", hexString);
-    AppUtil::SaveLog("mWidth:", mWidth, " mHeight:", mHeight);
-    AppUtil::SaveLog("mDrawWidth:", mDrawWidth, " mDrawHeight:", mDrawHeight);
-    AppUtil::SaveLog("xStart:", xStart, " yStart:", yStart);
-    AppUtil::SaveLog("xMax:", xMax, " yMax:", yMax);
-    AppUtil::SaveLog("mPageSize:", mPageSize, " mCurPage:", mCurPage);
-    AppUtil::SaveLog("bitTotal:", hexString.size()*4);
+    // AppUtil::SaveLog("mWidth:", mWidth, " mHeight:", mHeight);
+    // AppUtil::SaveLog("mDrawWidth:", mDrawWidth, " mDrawHeight:", mDrawHeight);
+    // AppUtil::SaveLog("xStart:", xStart, " yStart:", yStart);
+    // AppUtil::SaveLog("xMax:", xMax, " yMax:", yMax);
+    // AppUtil::SaveLog("mPageSize:", mPageSize, " mCurPage:", mCurPage);
+    // AppUtil::SaveLog("bitTotal:", hexString.size()*4);
 
     // 碰到的问题：
     // 行尾剩余空间 不足 4 个像素 时
@@ -201,7 +201,7 @@ void DrawGrid::DrawHexString(HWND hwnd, HDC hdc){
     BitBlt(hdc, xStart, yStart, mDrawWidth, mDrawHeight, hdcMem, 0, 0, SRCCOPY);
     DeleteDC(hdcMem);
     DeleteObject(hBitmap);
-    AppUtil::SaveLog("DrawHexString finish");
+    // AppUtil::SaveLog("DrawHexString finish");
 }
 
 

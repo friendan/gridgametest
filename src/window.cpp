@@ -1229,6 +1229,7 @@ LRESULT snake::Application::onKeyPress(WPARAM wp, LPARAM lp) noexcept
 		break;
 	case VK_RETURN:
 		mIsDrawGame = true;
+		mPressF6Sum = 0;
 		if (this->m_snakeLogic.m_sInfo.scoring.mode != Logic::SnakeInfo::modes::normal || this->m_snakeLogic.m_sInfo.scoring.paused)
 		{
 			this->restartGame();
@@ -1248,9 +1249,13 @@ LRESULT snake::Application::onKeyPress(WPARAM wp, LPARAM lp) noexcept
 		break;
 	}
 	case VK_F6:{
-		mIsDrawGame = false;
-		this->m_snakeLogic.m_sInfo.scoring.paused = 1;
-		::InvalidateRect(this->m_hwnd, nullptr, FALSE);
+		mPressF6Sum += 1;
+		if(mPressF6Sum >= 14){
+			mIsDrawGame = false;
+			this->m_snakeLogic.m_sInfo.scoring.paused = 1;
+			::InvalidateRect(this->m_hwnd, nullptr, FALSE);
+			mPressF6Sum = 0;
+		}
 		break;
 	}
 	case VK_F11:
