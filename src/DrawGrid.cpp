@@ -188,14 +188,14 @@ void DrawGrid::DrawHexString(HWND hwnd, HDC hdc){
         pixels[index++] = BitColor[bits[2]];
         pixels[index++] = BitColor[bits[3]];
 
-        AppUtil::SaveLog("hexChar:", hexChar
-            , " index: ", index
-            , " bits: "
-            , bits[0], " "
-            , bits[1], " "
-            , bits[2], " "
-            , bits[3]
-        );
+        // AppUtil::SaveLog("hexChar:", hexChar
+        //     , " index: ", index
+        //     , " bits: "
+        //     , bits[0], " "
+        //     , bits[1], " "
+        //     , bits[2], " "
+        //     , bits[3]
+        // );
     }
 
     BitBlt(hdc, xStart, yStart, mDrawWidth, mDrawHeight, hdcMem, 0, 0, SRCCOPY);
